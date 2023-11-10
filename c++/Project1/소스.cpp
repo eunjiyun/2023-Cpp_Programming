@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------
-//2023.2학기 c++ 11.06 (10주 1일)
+//2023.2학기 c++ 11.09 (10주 2일)
 // 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------
 // 사용자 정의 자료형 - user-defined data type
@@ -10,49 +10,22 @@
 #include<iostream>
 #include<string>
 #include "save.h"
+#include"STRING.h"
 using namespace std;
 
-//[문제] std::string은 C언어의 char*를 완벽하게 대체한다.
-//std::string과 유사하게 동작하는 STRING 클래스를 코딩하여
-//자원을 관리하는 클래스를 공부한다.
-//main()이 문제없이 실행되게 하자.
-
-class STRING {
-	size_t num;
-	char* p;
-public:
-	STRING(const char* s) :num{ strlen(s) } {
-		p = new char[num];
-		memcpy(p, s, num);
-
-		cout << "생성자(const char*) - " << num << ", 메모리: " << (void*)p << endl;
-	}
-
-	~STRING() {
-		cout << "소멸자 - " << num << " , 메모리: " << (void*)p << endl;
-		delete[] p;
-	}
-	size_t size() const {
-		return num;
-	}
-
-	void show() const {
-		for (int i{}; i < num; ++i)
-			cout << p[i];
-		cout << endl;
-	}
-};
 
 
 //---------
 int main()
 //---------
 {
-	STRING s{ "스트링" };
-	STRING t = s;
+	//STRING::관찰 = true;
 
-	s.show();
-	t.show();
+	string s{ "난 string이야" };
+
+	s = s + " 난 + 기능도 된다!";
+
+	cout << s << endl;
 
 	save("소스.cpp");
 }
