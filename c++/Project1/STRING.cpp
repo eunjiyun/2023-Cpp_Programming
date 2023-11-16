@@ -6,6 +6,9 @@
 #include<iostream>
 #include "STRING.h"
 
+
+bool STRING::관찰{ false };//관찰하려면 아무데서나 true로 바꿔주세요
+
 STRING::STRING(const char* s)
 	:num{ strlen(s) }
 {
@@ -89,6 +92,30 @@ STRING STRING::operator+(const STRING& s)const
 	//RVO(Return Value Optimization) - 반환값 최적화
 }
 
+//2023.11.16 free function
+STRING operator+(const char* p, const STRING& s)
+{
+	STRING temp;
+	temp.num = strlen(p) + s.num;
+	temp.p=new char[temp.num];
+
+	memcpy(temp.p, p, strlen(p));
+	memcpy(temp.p + strlen(p), s.p, s.num);
+
+	return temp;
+}
+
+//2023.11.16
+char STRING::operator[](int idx)const
+{
+	return p[idx];
+}
+
+char& STRING::operator[](int idx)
+{
+	return p[idx];
+}
+
 
 size_t STRING::size() const 
 {
@@ -102,5 +129,12 @@ void STRING::show() const
 	std::cout << std::endl;
 }
 
-bool STRING::관찰{ false };
+//2023.11.16
+std::ostream& operator<<(std::ostream& os, const STRING& s)
+{
+	for (int i{}; i < s.num; ++i)
+		os << s.p[i];
+	return os;
+}
+
 

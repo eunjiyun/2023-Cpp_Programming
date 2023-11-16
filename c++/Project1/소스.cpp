@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------
-//2023.2학기 c++ 11.15 (11주 1일)
+//2023.2학기 c++ 11.16 (11주 2일)
 // 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------
 // 사용자 정의 자료형 - user-defined data type
@@ -8,28 +8,45 @@
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 #include<iostream>
-#include<string>
 #include "save.h"
 #include"STRING.h"
 using namespace std;
 
-//오늘은 코딩만
-ostream& operator<<(ostream&, const STRING&);
+//++, ()
 
-cout << 1;
+class INT {
+	int data{};
+public:
+	INT() = default;
+	INT(int v):data{v}{}
 
+	INT operator++(int) {//후위증가 코딩=>임시 객체이기때문에 INT에 레퍼런스가 붙지X
+		INT temp{ *this };//현재의 나를 저장한다
+		++(*this);//나를 1 증가 시킨다
+		return temp;//저장한 나를 return
+	}
+
+	INT& operator++() {//const 붙이면 안돼, n을 100에서 101로 바꿀거라서
+		++data;
+		return *this;
+	}
+	
+	//friend 안 붙이면 함수 인자가 너무 많다라고 하면서 빨간 줄이 뜹니다.
+	friend ostream& operator<<(ostream& os,INT i) {//레퍼런스 붙이는게 8바이트, 그래서 그냥 복사해서 쓴다 레퍼런스 떼고
+		return os << i.data;
+	}
+};
 
 //---------
 int main()
 //---------
 {
-	//STRING::관찰 = true;
-
-	STRING s{ "난 string이야" };
-	//1. cout.operator<<(s);
-	//ostream.operator<<( STRING )이 있다면 
-	cout << s << endl;//여기에 빨간 줄이 안 생긴다!
-	//free function으로 해결
+	
+	INT n = 100;
+	
+	INT x = n++ ++ ++ ++;//이거 컴파일 안 되게 방지하기***?
+	//more effective c++의 한 챕터에 소개되어있는 이슈
+	cout << x << endl;
 
 	save("소스.cpp");
 }
