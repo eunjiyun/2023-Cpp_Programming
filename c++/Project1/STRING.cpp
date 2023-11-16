@@ -16,7 +16,8 @@ STRING::STRING(const char* s)
 		std::cout << "생성자(const char*) - " << num << ", 메모리: " << (void*)p << std::endl;
 }
 
-STRING::~STRING() {
+STRING::~STRING() 
+{
 	
 	if(관찰)
 		std::cout << "소멸자 - " << num << " , 메모리: " << (void*)p << std::endl;
@@ -34,7 +35,8 @@ STRING::STRING(const STRING& other) :num{ other.num } {
 }
 //2023. 11. 09 복사 생성자를 만들었다면 이와 짝이 되는 copy assignment operator를 
 //반드시 코딩해야 한다.
-STRING& STRING::operator=(const STRING& other) {
+STRING& STRING::operator=(const STRING& other) 
+{
 	//가장 먼저 할 일은 자기 자신을 할당하지 않도록 해야 한다.
 	if (this == &other)
 		return *this;
@@ -59,11 +61,42 @@ STRING::STRING(STRING&& other)
 	other.p = nullptr;
 }
 
-size_t STRING::size() const {
+//2023. 11. 15 연산자 오버로딩
+STRING STRING::operator+(const char* str)const
+{
+	STRING temp;//default ctor는 스페셜 함수, 디폴트 생성자를 정의해서 빨간 줄을 사라지게 했다.
+
+	temp.num = num + strlen(str);
+	temp.p=new char[temp.num];
+
+	memcpy(temp.p, p, num);
+	memcpy(temp.p + num, str, strlen(str));
+
+	return temp;//여기서 복사 생성자가 호출되어야 하지만 RVO가 작동된다.
+	//RVO(Return Value Optimization) - 반환값 최적화
+}
+STRING STRING::operator+(const STRING& s)const
+{
+	STRING temp;//default ctor는 스페셜 함수, 디폴트 생성자를 정의해서 빨간 줄을 사라지게 했다.
+
+	temp.num = num + s.num;
+	temp.p = new char[temp.num];
+
+	memcpy(temp.p, p, num);
+	memcpy(temp.p + num, s.p, s.num);
+
+	return temp;//여기서 복사 생성자가 호출되어야 하지만 RVO가 작동된다.
+	//RVO(Return Value Optimization) - 반환값 최적화
+}
+
+
+size_t STRING::size() const 
+{
 	return num;
 }
 
-void STRING::show() const {
+void STRING::show() const 
+{
 	for (int i{}; i < num; ++i)
 		std::cout << p[i];
 	std::cout << std::endl;
