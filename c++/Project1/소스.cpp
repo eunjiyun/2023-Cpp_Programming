@@ -1,39 +1,49 @@
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------
-//2023.2학기 c++ 11.16 (11주 2일)
+//2023.2학기 c++ 11.22 (12주 1일)
 // 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------
-// 사용자 정의 자료형 - user-defined data type
+// 사용자 정의 자료형 - 파일에 쓰고 읽기
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------
 // 과제 - 나만의 자료형을 만들어 반복연습
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 #include<iostream>
+#include<fstream>
+#include<string>
 #include "save.h"
 #include"STRING.h"
 using namespace std;
 
-//++, ()
+//***시험
+//[문제] "개20마리.txt" 파일에 class Dog 객체 20개의 정보를 
+// 연산자 <<를 사용하여 기록하였다.
+//읽어서 나이 오름차순으로 정렬한 후 화면에 출력하라.
+//클래스가 어떤 멤버를 갖고 있는지 정보를 알아야 이 문제를 풀 수 있다.
 
-class INT {
-	int data{};
+//class Dog {
+//	int age;
+//	string name;
+//	
+//	friend ostream& operator<<(ostream& os, const Dog& d) {
+//		os << dog.age << '\t' << dog.name << '\t';
+//		return os;
+//	}
+//};
+//이 정보를 갖고 문제 해결
+
+class Dog {
+	int age;
+	string name;
+
 public:
-	INT() = default;
-	INT(int v):data{v}{}
-
-	INT operator++(int) {//후위증가 코딩=>임시 객체이기때문에 INT에 레퍼런스가 붙지X
-		INT temp{ *this };//현재의 나를 저장한다
-		++(*this);//나를 1 증가 시킨다
-		return temp;//저장한 나를 return
+	friend istream& operator>>(istream& is, Dog& d) {
+		is >> d.age >> d.name;
+		return is;
 	}
 
-	INT& operator++() {//const 붙이면 안돼, n을 100에서 101로 바꿀거라서
-		++data;
-		return *this;
-	}
-	
-	//friend 안 붙이면 함수 인자가 너무 많다라고 하면서 빨간 줄이 뜹니다.
-	friend ostream& operator<<(ostream& os,INT i) {//레퍼런스 붙이는게 8바이트, 그래서 그냥 복사해서 쓴다 레퍼런스 떼고
-		return os << i.data;
+	friend ostream& operator<<(ostream& os, const Dog& d) {//파일 저장을 할게 아니라서 나이: 이런식으로 출력해도 된다.
+		os << "나이 : "<<d.age << '\t' << "이름 : " << d.name << '\t';
+		return os;
 	}
 };
 
@@ -41,12 +51,17 @@ public:
 int main()
 //---------
 {
-	
-	INT n = 100;
-	
-	INT x = n++ ++ ++ ++;//이거 컴파일 안 되게 방지하기***?
-	//more effective c++의 한 챕터에 소개되어있는 이슈
-	cout << x << endl;
+	Dog dog;
+	ifstream in{ "개20마리.txt" };
+
+	if (not in) {
+		cout << "파일 읽기 실패" << endl;
+		return 0;
+	}
+
+	in >> dog;
+
+	cout << dog;
 
 	save("소스.cpp");
 }
