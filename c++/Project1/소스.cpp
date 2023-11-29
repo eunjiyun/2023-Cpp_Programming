@@ -1,67 +1,67 @@
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------
-//2023.2학기 c++ 11.22 (12주 1일)
-// 
+//2023.2학기 c++ 11.29 (13주 1일)
+// 12 13 기말 시험
+// 12 14 종강, 한학기정리 12 18성적 게시e315
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------
-// 사용자 정의 자료형 - 파일에 쓰고 읽기
+// 상속과 다형성
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------
 // 과제 - 나만의 자료형을 만들어 반복연습
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 #include<iostream>
-#include<fstream>
-#include<string>
+#include<random>
 #include "save.h"
 #include"STRING.h"
 using namespace std;
 
-//***시험
-//[문제] "개20마리.txt" 파일에 class Dog 객체 20개의 정보를 
-// 연산자 <<를 사용하여 기록하였다.
-//읽어서 나이 오름차순으로 정렬한 후 화면에 출력하라.
-//클래스가 어떤 멤버를 갖고 있는지 정보를 알아야 이 문제를 풀 수 있다.
+//Animal, Dog, Bird를 상속으로 표현하고 다형성을 알아본다
+//다형성을 구현하기 위해 메모리를 더 사용한다. (포인터 크기만큼)
+//C++에서 다형성을 구현하기 위한 핵심 키워드 - virtual
 
-//class Dog {
-//	int age;
-//	string name;
-//	
-//	friend ostream& operator<<(ostream& os, const Dog& d) {
-//		os << dog.age << '\t' << dog.name << '\t';
-//		return os;
-//	}
-//};
-//이 정보를 갖고 문제 해결
-
-class Dog {
-	int age;
-	string name;
-
+class Animal {
 public:
-	friend istream& operator>>(istream& is, Dog& d) {
-		is >> d.age >> d.name;
-		return is;
-	}
-
-	friend ostream& operator<<(ostream& os, const Dog& d) {//파일 저장을 할게 아니라서 나이: 이런식으로 출력해도 된다.
-		os << "나이 : "<<d.age << '\t' << "이름 : " << d.name << '\t';
-		return os;
+	virtual void move()const {//virtual로 다형성이 된다.
+		cout << "동물 - 움직인다" << endl;
 	}
 };
+
+class Dog :public Animal {
+public:
+	void move()const {//멤버함수 override : 재정의 하였다.
+		cout << "개 - 달린다" << endl;
+	}
+};
+
+class Bird :public Animal {
+public:
+	void move()const {
+		cout << "새 - 난다" << endl;
+	}
+};
+
+//[문제] 동물 10마리를 관리하는 코드를 작성한다.
+//주사위를 던져 홀수이면 Dog를 만들고 짝수이면 Bird를 만들어라.
+//모든 동물의 move를 호출하여 다형성이 구현됨을 확인하라.
+
+default_random_engine dre;
+uniform_int_distribution uid{ 0,1 };
 
 //---------
 int main()
 //---------
 {
-	Dog dog;
-	ifstream in{ "개20마리.txt" };
+	Animal* animals[10];
 
-	if (not in) {
-		cout << "파일 읽기 실패" << endl;
-		return 0;
+	for (int i{}; i < 10; ++i) {
+		if (uid(dre))
+			animals[i] = new Dog;
+		else
+			animals[i] = new Bird;
 	}
 
-	in >> dog;
-
-	cout << dog;
+	//다형성이 구현됨을 확인
+	for (Animal* p : animals)
+		p->move();
 
 	save("소스.cpp");
 }
